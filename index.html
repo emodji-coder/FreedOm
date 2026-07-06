@@ -9,13 +9,13 @@
     <title>FreeDom — космический центр развития в Сочи, гостевой дом с ЗОЖ-кухней и баней</title>
     <meta name="description" content="Гостевой дом FreeDom в Сочи на Мамайке: номера от 600 ₽/сутки, сыроедческая кухня, баня, медитации. Уютная космическая атмосфера, сад, бассейн. Бронируйте напрямую без комиссии.">
     <meta name="keywords" content="гостевой дом Сочи, Мамайка, здоровый образ жизни, сыроедение, баня, медитация, йога, вегетарианское питание, отдых в Сочи, экопоселение">
-    <link rel="canonical" href="https://emodji-coder.github.io/FreedOm/">
+    <link rel="canonical" href="https://freedomsochi.github.io/FreedOm/">
 
     <!-- ===== OPEN GRAPH ===== -->
     <meta property="og:title" content="FreeDom — космический центр развития в Сочи" />
     <meta property="og:description" content="Уютные номера, баня, сыроедческая кухня, медитации. Бронируйте отдых в гармонии с собой." />
-    <meta property="og:image" content="https://emodji-coder.github.io/FreedOm/images/logo.png" />
-    <meta property="og:url" content="https://emodji-coder.github.io/FreedOm/" />
+    <meta property="og:image" content="https://freedomsochi.github.io/FreedOm/images/logo.png" />
+    <meta property="og:url" content="https://freedomsochi.github.io/FreedOm/" />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
 
@@ -34,10 +34,10 @@
             "addressCountry": "Россия"
         },
         "telephone": "+79630326011",
-        "url": "https://emodji-coder.github.io/FreedOm/",
+        "url": "https://freedomsochi.github.io/FreedOm/",
         "priceRange": "600 ₽ – 3000 ₽",
         "amenities": ["Бассейн", "Сауна", "Баня", "Бесплатный Wi-Fi", "Вегетарианская кухня", "Йога-зал", "Сад"],
-        "image": "https://emodji-coder.github.io/FreedOm/images/logo.png",
+        "image": "https://freedomsochi.github.io/FreedOm/images/logo.png",
         "review": [
             {
                 "@type": "Review",
@@ -63,7 +63,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ===== ВСЕ СТИЛИ (обновлён только .header и добавлен .header::before) ===== */
+        /* ===== ВЕСЬ CSS (без изменений) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
@@ -135,7 +135,6 @@
             z-index: 1;
         }
 
-        /* ===== ОБНОВЛЁННАЯ ШАПКА С ИЗОБРАЖЕНИЕМ ВЕТОК ===== */
         .header {
             position: relative;
             overflow: hidden;
@@ -156,7 +155,7 @@
             width: 100%;
             height: 100%;
             background: url('images/branches.png') center/cover no-repeat;
-            opacity: 0.5; /* регулируйте прозрачность веток */
+            opacity: 0.5;
             z-index: 0;
             pointer-events: none;
         }
@@ -166,7 +165,6 @@
             position: relative;
             z-index: 1;
         }
-
         .header .logo {
             width: 160px;
             height: auto;
@@ -179,7 +177,6 @@
         .header h1 span { color: #d4af37; }
         .header p { opacity: 0.7; font-weight: 300; }
 
-        /* ===== ОСТАЛЬНЫЕ СТИЛИ (без изменений) ===== */
         h2 { font-size: 1.6rem; color: #d4af37; border-bottom: 1px solid rgba(212,175,55,0.2); padding-bottom: 6px; margin: 2rem 0 1rem; text-shadow: 0 0 20px rgba(212,175,55,0.05); }
 
         .room-card, .sweet-item {
@@ -839,7 +836,7 @@
 
         <div class="form-card review-form">
             <p style="margin-bottom:1rem; opacity:0.6;">Оставьте свой отзыв о FreeDom — он появится на сайте!</p>
-            <form id="reviewForm" action="https://formspree.io/f/ВАШ_УНИКАЛЬНЫЙ_ID_ДЛЯ_ОТЗЫВОВ" method="POST">
+            <form id="reviewForm" action="https://formspree.io/f/xpqgkzgo" method="POST">
                 <div class="field">
                     <label>Ваше имя</label>
                     <input type="text" name="name" placeholder="Анна" required>
@@ -856,12 +853,12 @@
         </div>
     </section>
 
-    <!-- ФОРМА БРОНИРОВАНИЯ -->
+    <!-- ФОРМА БРОНИРОВАНИЯ (ID заменён) -->
     <section class="fade-section">
         <h2>📅 Забронировать номер</h2>
         <div class="form-card" id="bookingAnchor">
             <p style="margin-bottom:1.2rem; opacity:0.6;">Заполните форму, и мы свяжемся с вами в течение часа.</p>
-            <form id="bookingForm" action="https://formspree.io/f/ВАШ_УНИКАЛЬНЫЙ_ID" method="POST">
+            <form id="bookingForm" action="https://formspree.io/f/xpqgkzgo" method="POST">
                 <div class="field">
                     <label>Тип номера *</label>
                     <select name="room_type" required>
@@ -1010,7 +1007,7 @@
         document.body.classList.add('loaded');
     });
 
-    // ===== АНИМАЦИЯ ПОЯВЛЕНИЯ ПРИ СКРОЛЛЕ =====
+    // ===== АНИМАЦИЯ ПОЯВЛЕНИЯ =====
     const sections = document.querySelectorAll('.fade-section');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -1021,7 +1018,7 @@
     }, { threshold: 0.1 });
     sections.forEach(section => observer.observe(section));
 
-    // ===== МОДАЛКА (данные) =====
+    // ===== МОДАЛКА =====
     const data = {
         room1: { title: '🏡 Семейная комната', badges: 'до 4 чел · двуспальная + двухъярусная', price: '2 500 ₽/сутки · 24 000 ₽/месяц', description: 'Просторная комната для семьи или компании. В наличии: двуспальная кровать и двухъярусная кровать, стол, стулья, шкаф. Санузел на этаже. Рядом общая кухня и летняя кухня с видом на бассейн. Идеально для семейного отдыха.', img: 'images/room-family.jpg', action: '#bookingAnchor', actionText: 'Забронировать' },
         room2: { title: '🌿 Двухместный с балконом', badges: 'до 2 чел · балкон', price: '3 000 ₽/сутки · 30 000 ₽/месяц', description: 'Уютная комната с выходом на балкон. Двуспальная кровать, рабочий стол, стул, шкаф. Санузел на этаже. Балкон выходит в сад — идеальное место для утреннего чая или вечернего созерцания звёзд. Отличный выбор для пары или solo-путешественника.', img: 'images/room-balcony.jpg', action: '#bookingAnchor', actionText: 'Забронировать' },
@@ -1103,7 +1100,7 @@
         this.textContent = full.classList.contains('open') ? 'Свернуть ↑' : 'Читать далее →';
     });
 
-    // --- ФОРМЫ ---
+    // --- ФОРМЫ (ID обновлены) ---
     const bookingForm = document.getElementById('bookingForm');
     const bookingSuccess = document.getElementById('successMessage');
     bookingForm.addEventListener('submit', function(e) {
