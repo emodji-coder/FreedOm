@@ -39,7 +39,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ===== БАЗОВЫЕ СТИЛИ ===== */
+        /* ===== БАЗОВЫЕ СТИЛИ (из старой рабочей версии) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
@@ -102,7 +102,75 @@
         }
         .container { max-width: 640px; margin: 0 auto; padding: 0 16px 40px; position: relative; z-index: 1; }
 
-        /* ===== ШАПКА ===== */
+        /* ===== ВЕРХНЯЯ НАВИГАЦИЯ (НОВАЯ, МИНИМАЛИСТИЧНАЯ) ===== */
+        .top-nav {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 0 6px;
+            gap: 12px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            margin-bottom: 0.5rem;
+        }
+        .top-nav .nav-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            font-size: 0.7rem;
+            letter-spacing: 0.3px;
+        }
+        .top-nav .nav-links a {
+            color: #b8a9d4;
+            text-decoration: none;
+            padding: 4px 6px;
+            border-radius: 4px;
+            transition: 0.2s;
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+        .top-nav .nav-links a:hover {
+            color: #d4af37;
+            border-color: rgba(212,175,55,0.15);
+        }
+        .top-nav .nav-links a:active {
+            background: rgba(212,175,55,0.1);
+            border-color: rgba(212,175,55,0.3);
+            transform: scale(0.95);
+        }
+        .top-nav .login-icon {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #b8a9d4;
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.2s;
+            background: rgba(255,255,255,0.02);
+        }
+        .top-nav .login-icon:hover {
+            color: #d4af37;
+            border-color: rgba(212,175,55,0.15);
+        }
+        .top-nav .login-icon:active {
+            background: rgba(212,175,55,0.08);
+            transform: scale(0.95);
+        }
+        .top-nav .login-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* ===== ШАПКА (без изменений) ===== */
         .header {
             position: relative;
             overflow: hidden;
@@ -128,7 +196,14 @@
             pointer-events: none;
         }
         .header .logo, .header h1, .header p { position: relative; z-index: 1; }
-        .header .logo { width: 160px; height: auto; border-radius: 50%; border: 2px solid rgba(212,175,55,0.4); box-shadow: 0 0 30px rgba(212,175,55,0.1); margin-bottom: 0.5rem; }
+        .header .logo {
+            width: 160px;
+            height: auto;
+            border-radius: 50%;
+            border: 2px solid rgba(212,175,55,0.4);
+            box-shadow: 0 0 30px rgba(212,175,55,0.1);
+            margin-bottom: 0.5rem;
+        }
         .header h1 { font-weight: 300; font-size: 2.2rem; text-shadow: 0 0 40px rgba(212,175,55,0.1); }
         .header h1 span { color: #d4af37; }
         .header p { opacity: 0.7; font-weight: 300; }
@@ -669,6 +744,23 @@
 </div>
 
 <div class="container">
+    <!-- ВЕРХНЯЯ НАВИГАЦИЯ (НОВАЯ) -->
+    <div class="top-nav">
+        <div class="nav-links">
+            <a href="partners.html">Партнёрская программа</a>
+            <a href="profile.html">Личный кабинет</a>
+            <a href="purchases.html">Покупки</a>
+        </div>
+        <a href="login.html" class="login-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                <polyline points="10 17 15 12 10 7"/>
+                <line x1="15" y1="12" x2="3" y2="12"/>
+            </svg>
+            <span>Вход</span>
+        </a>
+    </div>
+
     <!-- ШАПКА -->
     <div class="header">
         <img src="images/logo.png" alt="FreeDom" class="logo">
@@ -993,7 +1085,7 @@
         <p style="text-align:center; opacity:0.4;">📍 Сочи, Мамайка, Теневой пер., 48</p>
     </section>
 
-    <!-- ===== КАРТА (ОБНОВЛЁННАЯ) ===== -->
+    <!-- ===== КАРТА ===== -->
     <section class="fade-section">
         <h2>🗺️ Как нас найти</h2>
         <div class="map-container">
@@ -1051,7 +1143,7 @@
 <script>
     // ===== ДАННЫЕ ДЛЯ МОДАЛЬНЫХ ОКОН =====
     const data = {
-        // Номера
+        // Номера (полностью из старого кода)
         room1: {
             title: '🏡 Семейная комната',
             badges: 'до 4 чел · двуспальная + двухъярусная',
@@ -1115,7 +1207,6 @@
             action: '#bookingAnchor',
             actionText: 'Забронировать'
         },
-        // Сладости
         sweet1: {
             title: 'Шоколад с орехами и клюквой',
             badges: '',
@@ -1161,7 +1252,6 @@
             action: 'https://wa.me/79630326011?text=Здравствуйте! Хочу заказать мёд',
             actionText: 'Заказать в WhatsApp'
         },
-        // Баня
         service1: {
             title: '🔥 Баня FreeDom',
             badges: 'индивидуально · для проживающих',
@@ -1175,7 +1265,6 @@
             action: 'https://wa.me/79630326011?text=Здравствуйте! Хочу забронировать баню',
             actionText: 'Забронировать баню в WhatsApp'
         },
-        // События
         event1: {
             title: '🔔 Гонг-медитация',
             badges: 'релаксация · звукотерапия',
@@ -1205,7 +1294,7 @@
         }
     };
 
-    // ===== ЛОГИКА МОДАЛКИ С ГАЛЕРЕЕЙ =====
+    // ===== ЛОГИКА МОДАЛКИ =====
     const overlay = document.getElementById('modalOverlay');
     const modalImg = document.getElementById('modalImage');
     const modalTitle = document.getElementById('modalTitle');
@@ -1253,7 +1342,6 @@
         currentItem = null;
     }
 
-    // Навигация галереи
     prevBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         if (!currentItem) return;
@@ -1268,22 +1356,17 @@
         updateGallery();
     });
 
-    // Закрытие по клику на фон ИЛИ на крестик
     overlay.addEventListener('click', function(e) {
-        if (e.target === overlay) {
-            closeModal();
-        }
+        if (e.target === overlay) closeModal();
     });
     closeBtn.addEventListener('click', closeModal);
 
-    // Обработчики кликов на карточки номеров и сладостей
     document.querySelectorAll('.room-card[data-id], .sweet-item[data-id]').forEach(el => {
         el.addEventListener('click', function() {
             openModal(this.dataset.id);
         });
     });
 
-    // Баня
     const saunaBlock = document.querySelector('.sauna-block');
     if (saunaBlock) {
         saunaBlock.addEventListener('click', function() {
@@ -1291,7 +1374,6 @@
         });
     }
 
-    // События (карточки и кнопки "Подробнее")
     document.querySelectorAll('.event-card[data-id]').forEach(el => {
         el.addEventListener('click', function(e) {
             if (e.target.classList.contains('btn-detail')) return;
@@ -1306,7 +1388,6 @@
         }
     });
 
-    // ===== СВОРАЧИВАНИЕ ТЕКСТА О НАС =====
     document.getElementById('aboutToggle').addEventListener('click', function(e) {
         e.stopPropagation();
         const full = document.getElementById('aboutFull');
@@ -1314,13 +1395,11 @@
         this.textContent = full.classList.contains('open') ? 'Свернуть ↑' : 'Читать далее →';
     });
 
-    // ===== ПРЕЛОАДЕР =====
     window.addEventListener('load', function() {
         document.getElementById('preloader').classList.add('hide');
         document.body.classList.add('loaded');
     });
 
-    // ===== АНИМАЦИЯ ПОЯВЛЕНИЯ =====
     const sections = document.querySelectorAll('.fade-section');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -1331,7 +1410,6 @@
     }, { threshold: 0.1 });
     sections.forEach(section => observer.observe(section));
 
-    // ===== ФОРМЫ =====
     const bookingForm = document.getElementById('bookingForm');
     const bookingSuccess = document.getElementById('successMessage');
     bookingForm.addEventListener('submit', function(e) {
@@ -1350,7 +1428,6 @@
         }, 500);
     });
 
-    // ===== МУЗЫКА =====
     const audio = document.getElementById('bgMusic');
     const toggleBtn = document.getElementById('musicToggle');
     let isPlaying = false;
