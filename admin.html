@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Админ-панель — FreeDom</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0b0d17;
+            color: #eae6f0;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px 0 60px;
+        }
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .header {
+            background: linear-gradient(145deg, rgba(26,16,61,0.95), rgba(11,13,23,0.95));
+            border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 0 0 40px 40px;
+            padding: 1.8rem 1rem;
+            text-align: center;
+            margin: 0 -16px 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('images/branches.png') center/cover no-repeat;
+            opacity: 0.4;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .header .back-link {
+            position: absolute;
+            top: 16px;
+            left: 20px;
+            color: #b8a9d4;
+            text-decoration: none;
+            font-size: 0.9rem;
+            z-index: 1;
+        }
+        .header .back-link:hover { color: #d4af37; }
+        .header h1 {
+            font-weight: 300;
+            font-size: 1.8rem;
+            color: #d4af37;
+            position: relative;
+            z-index: 1;
+        }
+        .header p {
+            opacity: 0.7;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .admin-badge {
+            display: inline-block;
+            background: rgba(212,175,55,0.12);
+            border: 1px solid rgba(212,175,55,0.2);
+            color: #d4af37;
+            padding: 2px 14px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+        .card h3 {
+            color: #d4af37;
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.3s;
+            border: none;
+        }
+        .btn-primary {
+            background: linear-gradient(145deg, #d4af37, #b8952a);
+            color: #0b0d17;
+            box-shadow: 0 4px 15px rgba(212,175,55,0.3);
+        }
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 25px rgba(212,175,55,0.5);
+        }
+        .btn-danger {
+            background: rgba(255,0,0,0.1);
+            border: 1px solid rgba(255,0,0,0.2);
+            color: #ff6b6b;
+        }
+        .btn-danger:hover {
+            background: rgba(255,0,0,0.15);
+        }
+        .btn-secondary {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #b8a9d4;
+        }
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.08);
+        }
+        .btn-block {
+            width: 100%;
+            text-align: center;
+            margin: 4px 0;
+        }
+
+        .field {
+            margin-bottom: 1rem;
+        }
+        .field label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: #b8a9d4;
+            font-size: 0.9rem;
+        }
+        .field input, .field select, .field textarea {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 1rem;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            color: #eae6f0;
+            font-family: inherit;
+            transition: 0.3s;
+        }
+        .field input:focus, .field select:focus {
+            border-color: rgba(212,175,55,0.2);
+            outline: none;
+            background: rgba(255,255,255,0.06);
+        }
+        .field input::placeholder {
+            color: rgba(255,255,255,0.2);
+        }
+
+        .user-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-size: 0.9rem;
+        }
+        .user-item:last-child { border-bottom: none; }
+        .user-item .user-info { flex: 1; }
+        .user-item .user-info .name { font-weight: 500; }
+        .user-item .user-info .email { opacity: 0.5; font-size: 0.8rem; }
+        .user-item .user-balance { color: #d4af37; font-weight: 600; }
+        .user-item .select-btn {
+            background: rgba(212,175,55,0.1);
+            border: 1px solid rgba(212,175,55,0.15);
+            color: #d4af37;
+            padding: 2px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: 0.2s;
+        }
+        .user-item .select-btn:hover {
+            background: rgba(212,175,55,0.2);
+        }
+
+        .hidden { display: none; }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            opacity: 0.6;
+        }
+        .loading .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(212,175,55,0.1);
+            border-top: 3px solid #d4af37;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .error-msg {
+            background: rgba(255,0,0,0.1);
+            border: 1px solid rgba(255,0,0,0.2);
+            color: #ff6b6b;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        .success-msg {
+            background: rgba(37,211,102,0.08);
+            border: 1px solid rgba(37,211,102,0.15);
+            color: #25D366;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 480px) {
+            .user-item { flex-wrap: wrap; gap: 6px; }
+            .user-item .select-btn { margin-left: auto; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- ШАПКА -->
+    <div class="header">
+        <a href="index.html" class="back-link">← На главную</a>
+        <h1>⚙️ Админ-панель</h1>
+        <p>Управление пользователями и покупками</p>
+        <div class="admin-badge" id="adminBadge">🔒 Администратор</div>
+    </div>
+
+    <!-- Состояние загрузки -->
+    <div id="loadingState" class="loading">
+        <div class="spinner"></div>
+        <p>Загрузка данных...</p>
+    </div>
+
+    <!-- Основной контент (скрыт до проверки) -->
+    <div id="adminContent" style="display:none;">
+
+        <!-- ===== СТАТИСТИКА ===== -->
+        <div class="card">
+            <h3>📊 Статистика</h3>
+            <div style="display:flex; gap:20px; flex-wrap:wrap;">
+                <div><span style="opacity:0.6;">Всего пользователей:</span> <strong id="totalUsers" style="color:#d4af37;">0</strong></div>
+                <div><span style="opacity:0.6;">Всего покупок:</span> <strong id="totalPurchases" style="color:#d4af37;">0</strong></div>
+                <div><span style="opacity:0.6;">Общая выручка:</span> <strong id="totalRevenue" style="color:#d4af37;">0 ₽</strong></div>
+            </div>
+        </div>
+
+        <!-- ===== ДОБАВИТЬ ПОКУПКУ ===== -->
+        <div class="card">
+            <h3>➕ Добавить покупку</h3>
+            <p style="font-size:0.85rem; opacity:0.6; margin-bottom:1rem;">Выберите пользователя и введите сумму покупки. Бонусы начислятся автоматически.</p>
+            <form id="addPurchaseForm">
+                <div class="field">
+                    <label for="purchaseUser">Пользователь</label>
+                    <select id="purchaseUser" required>
+                        <option value="">Выберите пользователя...</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="purchaseAmount">Сумма покупки (₽)</label>
+                    <input type="number" id="purchaseAmount" placeholder="5000" min="1" required>
+                </div>
+                <div id="purchaseError" class="error-msg"></div>
+                <div id="purchaseSuccess" class="success-msg">✅ Покупка добавлена! Бонусы начислены.</div>
+                <button type="submit" class="btn btn-primary btn-block" id="addPurchaseBtn">Добавить покупку</button>
+            </form>
+        </div>
+
+        <!-- ===== СПИСОК ПОЛЬЗОВАТЕЛЕЙ ===== -->
+        <div class="card">
+            <h3>👥 Все пользователи</h3>
+            <div class="user-list" id="userList">
+                <div style="text-align:center; opacity:0.4; padding:1rem;">Загрузка пользователей...</div>
+            </div>
+        </div>
+
+        <!-- ===== ПОСЛЕДНИЕ ТРАНЗАКЦИИ ===== -->
+        <div class="card">
+            <h3>📜 Последние транзакции</h3>
+            <div id="transactionList" style="max-height:200px; overflow-y:auto;">
+                <div style="text-align:center; opacity:0.4; padding:1rem;">Загрузка транзакций...</div>
+            </div>
+        </div>
+
+        <!-- ===== ВЫХОД ===== -->
+        <button class="btn btn-danger btn-block" id="logoutBtn">🚪 Выйти из админ-панели</button>
+    </div>
+
+    <div class="footer">FreeDom — место для жизни, отдыха и развития ❤️</div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+    // ===== КОНФИГУРАЦИЯ FIREBASE =====
+    const firebaseConfig = {
+        apiKey: "AIzaSyAK5KcbIHHcOon-pK9nskM0AKL5pdhwwQQ",
+        authDomain: "freedom-referal.firebaseapp.com",
+        projectId: "freedom-referal",
+        storageBucket: "freedom-referal.firebasestorage.app",
+        messagingSenderId: "189555481286",
+        appId: "1:189555481286:web:870bc07acaa7d4c8b655c7"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // ===== EMAIL АДМИНИСТРАТОРА (ЗАМЕНИТЕ НА СВОЙ!) =====
+    const ADMIN_EMAIL = "ваш_email@example.com"; // <-- ВСТАВЬТЕ СВОЙ EMAIL
+
+    // Элементы
+    const loadingState = document.getElementById('loadingState');
+    const adminContent = document.getElementById('adminContent');
+    const totalUsers = document.getElementById('totalUsers');
+    const totalPurchases = document.getElementById('totalPurchases');
+    const totalRevenue = document.getElementById('totalRevenue');
+    const userList = document.getElementById('userList');
+    const transactionList = document.getElementById('transactionList');
+    const purchaseUser = document.getElementById('purchaseUser');
+    const purchaseAmount = document.getElementById('purchaseAmount');
+    const addPurchaseForm = document.getElementById('addPurchaseForm');
+    const purchaseError = document.getElementById('purchaseError');
+    const purchaseSuccess = document.getElementById('purchaseSuccess');
+    const addPurchaseBtn = document.getElementById('addPurchaseBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const adminBadge = document.getElementById('adminBadge');
+
+    // Проверка авторизации и прав администратора
+    auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+            // Не авторизован — перенаправляем на вход
+            window.location.href = 'login.html';
+            return;
+        }
+
+        // Проверяем, что email совпадает с администраторским
+        if (user.email !== ADMIN_EMAIL) {
+            // Если не администратор — показываем запрет
+            loadingState.innerHTML = `
+                <div style="text-align:center; padding:2rem;">
+                    <div style="font-size:3rem; margin-bottom:1rem;">⛔</div>
+                    <h2 style="color:#ff6b6b;">Доступ запрещён</h2>
+                    <p style="opacity:0.6;">У вас нет прав администратора.</p>
+                    <a href="profile.html" style="color:#d4af37; text-decoration:none;">← Вернуться в профиль</a>
+                </div>
+            `;
+            adminContent.style.display = 'none';
+            return;
+        }
+
+        // Администратор — показываем панель
+        adminBadge.textContent = '🔒 Администратор (' + user.email + ')';
+        loadingState.style.display = 'none';
+        adminContent.style.display = 'block';
+
+        // Загружаем данные
+        loadUsers();
+        loadTransactions();
+        loadStats();
+    });
+
+    // ===== ЗАГРУЗКА ПОЛЬЗОВАТЕЛЕЙ =====
+    async function loadUsers() {
+        try {
+            const snapshot = await db.collection('users').orderBy('displayName').get();
+            let html = '';
+            let count = 0;
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                count++;
+                html += `
+                    <div class="user-item">
+                        <div class="user-info">
+                            <div class="name">${data.displayName || 'Без имени'}</div>
+                            <div class="email">${data.email || '—'} · Код: ${data.refCode || '—'}</div>
+                        </div>
+                        <div class="user-balance">${data.balance || 0} ₽</div>
+                        <button class="select-btn" data-uid="${doc.id}" data-name="${data.displayName || 'Без имени'}">Выбрать</button>
+                    </div>
+                `;
+            });
+            userList.innerHTML = html || '<div style="text-align:center; opacity:0.4; padding:1rem;">Пользователей пока нет</div>';
+            totalUsers.textContent = count;
+
+            // Заполняем выпадающий список для покупок
+            const select = document.getElementById('purchaseUser');
+            select.innerHTML = '<option value="">Выберите пользователя...</option>';
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const option = document.createElement('option');
+                option.value = doc.id;
+                option.textContent = data.displayName || data.email || doc.id;
+                select.appendChild(option);
+            });
+
+            // Обработчики для кнопок "Выбрать"
+            document.querySelectorAll('.select-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const uid = this.dataset.uid;
+                    const name = this.dataset.name;
+                    const select = document.getElementById('purchaseUser');
+                    for (let option of select.options) {
+                        if (option.value === uid) {
+                            select.selectedIndex = option.index;
+                            break;
+                        }
+                    }
+                    document.getElementById('purchaseAmount').focus();
+                });
+            });
+
+        } catch (error) {
+            console.error('Ошибка загрузки пользователей:', error);
+            userList.innerHTML = '<div style="text-align:center; color:#ff6b6b;">Ошибка загрузки</div>';
+        }
+    }
+
+    // ===== ЗАГРУЗКА ТРАНЗАКЦИЙ =====
+    async function loadTransactions() {
+        try {
+            const snapshot = await db.collection('transactions')
+                .orderBy('createdAt', 'desc')
+                .limit(20)
+                .get();
+
+            let html = '';
+            let purchaseCount = 0;
+            let revenue = 0;
+
+            // Также считаем общее количество покупок и выручку
+            const purchasesSnapshot = await db.collection('purchases').get();
+            purchaseCount = purchasesSnapshot.size;
+            purchasesSnapshot.forEach(doc => {
+                revenue += doc.data().amount || 0;
+            });
+            totalPurchases.textContent = purchaseCount;
+            totalRevenue.textContent = revenue + ' ₽';
+
+            if (snapshot.empty) {
+                transactionList.innerHTML = '<div style="text-align:center; opacity:0.4; padding:1rem;">Транзакций пока нет</div>';
+                return;
+            }
+
+            // Получаем имена пользователей для транзакций
+            const userNames = {};
+            const userSnapshot = await db.collection('users').get();
+            userSnapshot.forEach(doc => {
+                userNames[doc.id] = doc.data().displayName || doc.data().email || doc.id;
+            });
+
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const userName = userNames[data.userUid] || data.userUid || 'Неизвестный';
+                const date = data.createdAt?.toDate?.() || new Date();
+                const levelLabel = data.level ? `Уровень ${data.level}` : '';
+                html += `
+                    <div class="user-item" style="font-size:0.85rem;">
+                        <div class="user-info">
+                            <div class="name">${userName}</div>
+                            <div style="opacity:0.4; font-size:0.7rem;">${date.toLocaleDateString('ru-RU')} ${date.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'})}</div>
+                        </div>
+                        <div style="color:#25D366; font-weight:600;">+${data.amount || 0} ₽</div>
+                        <div style="opacity:0.4; font-size:0.7rem;">${levelLabel}</div>
+                    </div>
+                `;
+            });
+            transactionList.innerHTML = html;
+
+        } catch (error) {
+            console.error('Ошибка загрузки транзакций:', error);
+            transactionList.innerHTML = '<div style="text-align:center; color:#ff6b6b;">Ошибка загрузки</div>';
+        }
+    }
+
+    // ===== ЗАГРУЗКА СТАТИСТИКИ =====
+    async function loadStats() {
+        try {
+            const usersSnapshot = await db.collection('users').get();
+            totalUsers.textContent = usersSnapshot.size;
+        } catch (error) {
+            console.error('Ошибка статистики:', error);
+        }
+    }
+
+    // ===== ДОБАВЛЕНИЕ ПОКУПКИ =====
+    addPurchaseForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        purchaseError.style.display = 'none';
+        purchaseSuccess.style.display = 'none';
+        addPurchaseBtn.disabled = true;
+        addPurchaseBtn.textContent = 'Добавление...';
+
+        const userUid = purchaseUser.value;
+        const amount = parseFloat(purchaseAmount.value);
+
+        if (!userUid) {
+            showPurchaseError('Выберите пользователя.');
+            addPurchaseBtn.disabled = false;
+            addPurchaseBtn.textContent = 'Добавить покупку';
+            return;
+        }
+        if (!amount || amount < 1) {
+            showPurchaseError('Введите сумму больше 0.');
+            addPurchaseBtn.disabled = false;
+            addPurchaseBtn.textContent = 'Добавить покупку';
+            return;
+        }
+
+        try {
+            // Добавляем покупку в Firestore
+            await db.collection('purchases').add({
+                buyerUid: userUid,
+                amount: amount,
+                date: firebase.firestore.FieldValue.serverTimestamp(),
+                confirmedBy: auth.currentUser.uid
+            });
+
+            purchaseSuccess.style.display = 'block';
+            addPurchaseBtn.textContent = '✅ Добавлено!';
+            purchaseAmount.value = '';
+            purchaseUser.value = '';
+
+            // Перезагружаем данные
+            setTimeout(() => {
+                loadUsers();
+                loadTransactions();
+                loadStats();
+                addPurchaseBtn.disabled = false;
+                addPurchaseBtn.textContent = 'Добавить покупку';
+            }, 1500);
+
+        } catch (error) {
+            console.error('Ошибка добавления покупки:', error);
+            showPurchaseError('Ошибка добавления покупки. Попробуйте позже.');
+            addPurchaseBtn.disabled = false;
+            addPurchaseBtn.textContent = 'Добавить покупку';
+        }
+    });
+
+    function showPurchaseError(msg) {
+        purchaseError.textContent = msg;
+        purchaseError.style.display = 'block';
+    }
+
+    // ===== ВЫХОД =====
+    logoutBtn.addEventListener('click', function() {
+        if (confirm('Выйти из админ-панели?')) {
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
+            });
+        }
+    });
+</script>
+</body>
+</html>
