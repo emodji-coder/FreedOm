@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Вход — FreeDom</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -28,30 +29,11 @@
             padding: 2rem 1.5rem;
             box-shadow: 0 8px 32px rgba(0,0,0,0.4);
         }
-        .logo {
-            text-align: center;
-            font-size: 2.2rem;
-            color: #d4af37;
-            font-weight: 300;
-            margin-bottom: 0.5rem;
-        }
+        .logo { text-align: center; font-size: 2.2rem; color: #d4af37; font-weight: 300; margin-bottom: 0.5rem; }
         .logo span { color: #d4af37; }
-        .subtitle {
-            text-align: center;
-            opacity: 0.6;
-            margin-bottom: 1.8rem;
-            font-size: 0.9rem;
-        }
-        .field {
-            margin-bottom: 1rem;
-        }
-        .field label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 4px;
-            color: #b8a9d4;
-            font-size: 0.9rem;
-        }
+        .subtitle { text-align: center; opacity: 0.6; margin-bottom: 1.8rem; font-size: 0.9rem; }
+        .field { margin-bottom: 1rem; }
+        .field label { display: block; font-weight: 500; margin-bottom: 4px; color: #b8a9d4; font-size: 0.9rem; }
         .field input {
             width: 100%;
             padding: 10px 14px;
@@ -68,9 +50,7 @@
             outline: none;
             background: rgba(255,255,255,0.06);
         }
-        .field input::placeholder {
-            color: rgba(255,255,255,0.2);
-        }
+        .field input::placeholder { color: rgba(255,255,255,0.2); }
         .btn {
             width: 100%;
             padding: 12px;
@@ -84,15 +64,8 @@
             transition: 0.3s;
             margin-top: 0.5rem;
         }
-        .btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 20px rgba(212,175,55,0.3);
-        }
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .btn:hover { transform: scale(1.02); box-shadow: 0 4px 20px rgba(212,175,55,0.3); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .error {
             background: rgba(255,0,0,0.1);
             border: 1px solid rgba(255,0,0,0.2);
@@ -102,30 +75,6 @@
             font-size: 0.85rem;
             margin-top: 0.5rem;
             display: none;
-        }
-        .footer-link {
-            text-align: center;
-            margin-top: 1.2rem;
-            font-size: 0.9rem;
-            opacity: 0.6;
-        }
-        .footer-link a {
-            color: #d4af37;
-            text-decoration: none;
-        }
-        .footer-link a:hover {
-            text-decoration: underline;
-        }
-        .back-link {
-            display: inline-block;
-            color: #b8a9d4;
-            text-decoration: none;
-            font-size: 0.85rem;
-            margin-bottom: 0.5rem;
-            transition: 0.2s;
-        }
-        .back-link:hover {
-            color: #d4af37;
         }
         .success-msg {
             background: rgba(37,211,102,0.08);
@@ -137,6 +86,11 @@
             margin-top: 0.5rem;
             display: none;
         }
+        .footer-link { text-align: center; margin-top: 1.2rem; font-size: 0.9rem; opacity: 0.6; }
+        .footer-link a { color: #d4af37; text-decoration: none; }
+        .footer-link a:hover { text-decoration: underline; }
+        .back-link { display: inline-block; color: #b8a9d4; text-decoration: none; font-size: 0.85rem; margin-bottom: 0.5rem; transition: 0.2s; }
+        .back-link:hover { color: #d4af37; }
     </style>
 </head>
 <body>
@@ -166,24 +120,12 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
     <script>
-        // ===== КОНФИГУРАЦИЯ FIREBASE =====
-        const firebaseConfig = {
-            apiKey: "AIzaSyAK5KcbIHHcOon-pK9nskM0AKL5pdhwwQQ",
-            authDomain: "freedom-referal.firebaseapp.com",
-            projectId: "freedom-referal",
-            storageBucket: "freedom-referal.firebasestorage.app",
-            messagingSenderId: "189555481286",
-            appId: "1:189555481286:web:870bc07acaa7d4c8b655c7"
-        };
+        // ===== ПОДКЛЮЧЕНИЕ К SUPABASE (КЛЮЧИ УЖЕ ВСТАВЛЕНЫ) =====
+        const SUPABASE_URL = 'https://vutmbhsclmcfqqlzxqkc.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1dG1iaHNjbG1jZnFxbHp4cWtjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1ODY1OTEsImV4cCI6MjEwMDE2MjU5MX0.PxvaHbwqJjOlStrr0HQx8xulR3BLPxzm4EQWl2LFu2c';
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const form = document.getElementById('loginForm');
         const emailInput = document.getElementById('email');
@@ -193,13 +135,13 @@
         const submitBtn = document.getElementById('submitBtn');
 
         // Если пользователь уже авторизован — отправляем в профиль
-        auth.onAuthStateChanged((user) => {
-            if (user) {
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session) {
                 window.location.href = 'profile.html';
             }
         });
 
-        form.addEventListener('submit', async function(e) {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
             errorMsg.style.display = 'none';
             successMsg.style.display = 'none';
@@ -217,22 +159,27 @@
             }
 
             try {
-                await auth.signInWithEmailAndPassword(email, password);
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) throw error;
+
                 successMsg.style.display = 'block';
                 submitBtn.textContent = 'Готово!';
                 submitBtn.disabled = true;
                 setTimeout(() => {
                     window.location.href = 'profile.html';
                 }, 1500);
+
             } catch (error) {
                 console.error('Ошибка входа:', error);
                 let message = 'Неверный email или пароль.';
-                if (error.code === 'auth/user-not-found') {
-                    message = 'Пользователь с таким email не найден.';
-                } else if (error.code === 'auth/wrong-password') {
-                    message = 'Неверный пароль.';
-                } else if (error.code === 'auth/too-many-requests') {
-                    message = 'Слишком много попыток. Попробуйте позже.';
+                if (error.message?.includes('Invalid login credentials')) {
+                    message = 'Неверный email или пароль.';
+                } else if (error.message?.includes('Email not confirmed')) {
+                    message = 'Подтвердите email перед входом.';
                 }
                 showError(message);
                 submitBtn.disabled = false;
