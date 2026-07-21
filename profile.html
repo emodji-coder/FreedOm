@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Личный кабинет — FreeDom</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -15,13 +16,8 @@
             min-height: 100vh;
             padding: 20px 0 60px;
         }
-        .container {
-            max-width: 640px;
-            margin: 0 auto;
-            padding: 0 16px;
-        }
+        .container { max-width: 640px; margin: 0 auto; padding: 0 16px; }
 
-        /* Шапка */
         .header {
             background: linear-gradient(145deg, rgba(26,16,61,0.95), rgba(11,13,23,0.95));
             border: 1px solid rgba(212,175,55,0.2);
@@ -52,9 +48,6 @@
             text-decoration: none;
             font-size: 0.9rem;
             z-index: 1;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
         .header .back-link:hover { color: #d4af37; }
         .header h1 {
@@ -71,7 +64,6 @@
             z-index: 1;
         }
 
-        /* Карточка профиля */
         .profile-card {
             background: rgba(255,255,255,0.03);
             backdrop-filter: blur(4px);
@@ -110,18 +102,10 @@
             padding: 8px 0;
             border-bottom: 1px solid rgba(255,255,255,0.04);
         }
-        .profile-card .field:last-child {
-            border-bottom: none;
-        }
-        .profile-card .field .label {
-            opacity: 0.6;
-        }
-        .profile-card .field .value {
-            color: #d4af37;
-            font-weight: 500;
-        }
+        .profile-card .field:last-child { border-bottom: none; }
+        .profile-card .field .label { opacity: 0.6; }
+        .profile-card .field .value { color: #d4af37; font-weight: 500; }
 
-        /* Баланс */
         .balance-block {
             background: linear-gradient(145deg, rgba(212,175,55,0.08), rgba(212,175,55,0.02));
             border: 1px solid rgba(212,175,55,0.15);
@@ -135,12 +119,8 @@
             font-weight: 700;
             color: #d4af37;
         }
-        .balance-block .label {
-            opacity: 0.6;
-            font-size: 0.9rem;
-        }
+        .balance-block .label { opacity: 0.6; font-size: 0.9rem; }
 
-        /* Реферальная ссылка */
         .ref-link-block {
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.06);
@@ -173,22 +153,15 @@
             white-space: nowrap;
             flex-shrink: 0;
         }
-        .ref-link-block .ref-link .copy-btn:hover {
-            background: rgba(212,175,55,0.2);
-        }
-        .ref-link-block .ref-link .copy-btn:active {
-            transform: scale(0.95);
-        }
+        .ref-link-block .ref-link .copy-btn:hover { background: rgba(212,175,55,0.2); }
+        .ref-link-block .ref-link .copy-btn:active { transform: scale(0.95); }
         .ref-link-block .ref-stats {
             display: flex;
             justify-content: space-around;
             margin-top: 0.8rem;
             text-align: center;
         }
-        .ref-link-block .ref-stats .stat {
-            font-size: 0.8rem;
-            opacity: 0.7;
-        }
+        .ref-link-block .ref-stats .stat { font-size: 0.8rem; opacity: 0.7; }
         .ref-link-block .ref-stats .stat span {
             display: block;
             font-size: 1.2rem;
@@ -197,7 +170,6 @@
             opacity: 1;
         }
 
-        /* Кнопки */
         .btn {
             display: inline-block;
             padding: 10px 24px;
@@ -225,30 +197,17 @@
             border: 1px solid rgba(255,0,0,0.2);
             color: #ff6b6b;
         }
-        .btn-danger:hover {
-            background: rgba(255,0,0,0.15);
-        }
+        .btn-danger:hover { background: rgba(255,0,0,0.15); }
         .btn-secondary {
             background: rgba(255,255,255,0.04);
             border: 1px solid rgba(255,255,255,0.08);
             color: #b8a9d4;
         }
-        .btn-secondary:hover {
-            background: rgba(255,255,255,0.08);
-        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.08); }
 
-        .logout-btn {
-            margin-top: 0.5rem;
-        }
+        .logout-btn { margin-top: 0.5rem; }
+        .footer { text-align: center; margin-top: 2rem; font-size: 0.8rem; opacity: 0.3; }
 
-        .footer {
-            text-align: center;
-            margin-top: 2rem;
-            font-size: 0.8rem;
-            opacity: 0.3;
-        }
-
-        /* Загрузка */
         .loading {
             text-align: center;
             padding: 2rem;
@@ -265,43 +224,29 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Адаптив */
         @media (max-width: 480px) {
-            .profile-card .field {
-                flex-direction: column;
-                gap: 2px;
-            }
-            .profile-card .field .value {
-                font-size: 0.95rem;
-            }
-            .ref-link-block .ref-link {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
+            .profile-card .field { flex-direction: column; gap: 2px; }
+            .profile-card .field .value { font-size: 0.95rem; }
+            .ref-link-block .ref-link { flex-wrap: wrap; justify-content: center; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- ШАПКА -->
     <div class="header">
         <a href="index.html" class="back-link">← На главную</a>
         <h1>🌿 Личный кабинет</h1>
         <p>Управляйте своим профилем и бонусами</p>
     </div>
 
-    <!-- Основной контент -->
     <div id="profileContent">
-        <!-- Состояние загрузки -->
         <div id="loadingState" class="loading">
             <div class="spinner"></div>
             <p>Загрузка данных...</p>
         </div>
 
-        <!-- Профиль (скрыт до загрузки) -->
         <div id="profileData" style="display:none;">
-            <!-- Карточка профиля -->
             <div class="profile-card">
                 <div class="avatar" id="userAvatar">👤</div>
                 <div class="name" id="userName">Имя пользователя</div>
@@ -314,14 +259,12 @@
                 <div class="field"><span class="label">Реферальный код</span><span class="value" id="userRefCode">—</span></div>
             </div>
 
-            <!-- Баланс -->
             <div class="balance-block">
                 <div class="label">💰 Ваш баланс</div>
                 <div class="amount" id="userBalance">0 ₽</div>
                 <div style="font-size:0.8rem; opacity:0.4; margin-top:4px;">Начисляется за приглашённых друзей</div>
             </div>
 
-            <!-- Реферальная ссылка -->
             <div class="ref-link-block">
                 <div class="ref-link">
                     <span style="flex:1; word-break:break-all;" id="refLinkText">Загрузка ссылки...</span>
@@ -334,7 +277,6 @@
                 </div>
             </div>
 
-            <!-- Кнопки действий -->
             <a href="partners.html" class="btn btn-primary" style="margin-bottom:0.5rem;">🤝 Партнёрская программа</a>
             <a href="purchases.html" class="btn btn-secondary" style="margin-bottom:0.5rem;">📋 Мои покупки</a>
             <button class="btn btn-danger logout-btn" id="logoutBtn">🚪 Выйти из аккаунта</button>
@@ -344,32 +286,17 @@
     <div class="footer">FreeDom — место для жизни, отдыха и развития ❤️</div>
 </div>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
 <script>
-    // ===== КОНФИГУРАЦИЯ FIREBASE (ваша) =====
-    const firebaseConfig = {
-        apiKey: "AIzaSyAK5KcbIHHcOon-pK9nskM0AKL5pdhwwQQ",
-        authDomain: "freedom-referal.firebaseapp.com",
-        projectId: "freedom-referal",
-        storageBucket: "freedom-referal.firebasestorage.app",
-        messagingSenderId: "189555481286",
-        appId: "1:189555481286:web:870bc07acaa7d4c8b655c7"
-    };
+    // ===== ПОДКЛЮЧЕНИЕ К SUPABASE (КЛЮЧИ УЖЕ ВСТАВЛЕНЫ) =====
+    const SUPABASE_URL = 'https://vutmbhsclmcfqqlzxqkc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1dG1iaHNjbG1jZnFxbHp4cWtjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1ODY1OTEsImV4cCI6MjEwMDE2MjU5MX0.PxvaHbwqJjOlStrr0HQx8xulR3BLPxzm4EQWl2LFu2c';
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Элементы
     const loadingState = document.getElementById('loadingState');
     const profileData = document.getElementById('profileData');
     const logoutBtn = document.getElementById('logoutBtn');
 
-    // Поля профиля
     const userName = document.getElementById('userName');
     const userEmail = document.getElementById('userEmail');
     const userPhone = document.getElementById('userPhone');
@@ -384,83 +311,81 @@
     const refLevel3 = document.getElementById('refLevel3');
     const copyBtn = document.getElementById('copyRefBtn');
 
-    // Проверяем, авторизован ли пользователь
-    auth.onAuthStateChanged(async (user) => {
-        if (!user) {
-            // Если не авторизован — перенаправляем на страницу входа
+    supabase.auth.onAuthStateChange(async (event, session) => {
+        if (event === 'SIGNED_OUT' || !session) {
             window.location.href = 'login.html';
             return;
         }
 
-        // Показываем загрузку
-        loadingState.style.display = 'block';
-        profileData.style.display = 'none';
+        if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+            loadingState.style.display = 'block';
+            profileData.style.display = 'none';
 
-        try {
-            // Получаем данные пользователя из Firestore
-            const userDoc = await db.collection('users').doc(user.uid).get();
-            if (!userDoc.exists) {
-                // Если документа нет — возможно, пользователь не завершил регистрацию
-                alert('Профиль не найден. Пожалуйста, зарегистрируйтесь заново.');
-                auth.signOut();
-                return;
+            try {
+                const userId = session.user.id;
+                const userEmailText = session.user.email;
+
+                const { data: userData, error } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq('id', userId)
+                    .maybeSingle();
+
+                if (error || !userData) {
+                    console.error('Ошибка загрузки профиля:', error);
+                    loadingState.innerHTML = '<p style="color:#ff6b6b;">❌ Ошибка загрузки данных. Попробуйте обновить страницу.</p>';
+                    return;
+                }
+
+                userName.textContent = userData.display_name || 'Без имени';
+                userEmail.textContent = userEmailText || '—';
+                userPhone.textContent = userData.phone || '—';
+                userCity.textContent = userData.city || '—';
+                userBirth.textContent = userData.birth_date || '—';
+                userRefCode.textContent = userData.ref_code || '—';
+
+                if (userData.created_at) {
+                    const date = new Date(userData.created_at);
+                    userRegDate.textContent = date.toLocaleDateString('ru-RU');
+                } else {
+                    userRegDate.textContent = '—';
+                }
+
+                const balance = userData.balance || 0;
+                userBalance.textContent = balance + ' ₽';
+
+                const refCode = userData.ref_code || userId.slice(0, 8);
+                const siteUrl = window.location.origin + window.location.pathname.replace(/profile\.html$/, '');
+                const refUrl = siteUrl + 'register.html?ref=' + refCode;
+                refLinkText.textContent = refUrl;
+
+                const { data: referrals, error: refError } = await supabase
+                    .from('referrals')
+                    .select('level')
+                    .eq('referrer_id', userId);
+
+                if (!refError && referrals) {
+                    let count1 = 0, count2 = 0, count3 = 0;
+                    referrals.forEach(r => {
+                        if (r.level === 1) count1++;
+                        else if (r.level === 2) count2++;
+                        else if (r.level === 3) count3++;
+                    });
+                    refLevel1.textContent = count1;
+                    refLevel2.textContent = count2;
+                    refLevel3.textContent = count3;
+                }
+
+                loadingState.style.display = 'none';
+                profileData.style.display = 'block';
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+                loadingState.innerHTML = '<p style="color:#ff6b6b;">❌ Ошибка загрузки данных. Попробуйте обновить страницу.</p>';
             }
-
-            const userData = userDoc.data();
-
-            // Заполняем профиль
-            userName.textContent = userData.displayName || 'Без имени';
-            userEmail.textContent = user.email || '—';
-            userPhone.textContent = userData.phone || '—';
-            userCity.textContent = userData.city || '—';
-            userBirth.textContent = userData.birthDate || '—';
-            userRefCode.textContent = userData.refCode || '—';
-
-            // Дата регистрации
-            if (userData.registeredAt) {
-                const date = userData.registeredAt.toDate ? userData.registeredAt.toDate() : new Date(userData.registeredAt);
-                userRegDate.textContent = date.toLocaleDateString('ru-RU');
-            } else {
-                userRegDate.textContent = '—';
-            }
-
-            // Баланс
-            const balance = userData.balance || 0;
-            userBalance.textContent = balance + ' ₽';
-
-            // Реферальная ссылка
-            const refCode = userData.refCode || user.uid.slice(0, 8);
-            const siteUrl = window.location.origin + window.location.pathname.replace(/profile\.html$/, '');
-            const refUrl = siteUrl + 'register.html?ref=' + refCode;
-            refLinkText.textContent = refUrl;
-
-            // Считаем количество приглашённых по уровням
-            const referralsSnapshot = await db.collection('referrals')
-                .where('referrerUid', '==', user.uid)
-                .get();
-
-            let count1 = 0, count2 = 0, count3 = 0;
-            referralsSnapshot.forEach(doc => {
-                const data = doc.data();
-                if (data.level === 1) count1++;
-                else if (data.level === 2) count2++;
-                else if (data.level === 3) count3++;
-            });
-            refLevel1.textContent = count1;
-            refLevel2.textContent = count2;
-            refLevel3.textContent = count3;
-
-            // Показываем данные
-            loadingState.style.display = 'none';
-            profileData.style.display = 'block';
-
-        } catch (error) {
-            console.error('Ошибка загрузки профиля:', error);
-            loadingState.innerHTML = '<p style="color:#ff6b6b;">❌ Ошибка загрузки данных. Попробуйте обновить страницу.</p>';
         }
     });
 
-    // Копирование ссылки
     copyBtn.addEventListener('click', function() {
         const text = refLinkText.textContent;
         if (navigator.clipboard) {
@@ -470,7 +395,6 @@
                 setTimeout(() => copyBtn.textContent = original, 2000);
             });
         } else {
-            // fallback
             const textarea = document.createElement('textarea');
             textarea.value = text;
             document.body.appendChild(textarea);
@@ -483,12 +407,10 @@
         }
     });
 
-    // Выход из аккаунта
-    logoutBtn.addEventListener('click', function() {
+    logoutBtn.addEventListener('click', async function() {
         if (confirm('Вы уверены, что хотите выйти?')) {
-            auth.signOut().then(() => {
-                window.location.href = 'index.html';
-            });
+            await supabase.auth.signOut();
+            window.location.href = 'index.html';
         }
     });
 </script>
