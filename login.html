@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Вход — FreeDom</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Подключаем стабильную версию Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -91,6 +92,16 @@
         .footer-link a:hover { text-decoration: underline; }
         .back-link { display: inline-block; color: #b8a9d4; text-decoration: none; font-size: 0.85rem; margin-bottom: 0.5rem; transition: 0.2s; }
         .back-link:hover { color: #d4af37; }
+        .result-box {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+            text-align: center;
+        }
+        .result-box.show { display: block; }
+        .result-box.error { background: rgba(255,0,0,0.1); border: 1px solid rgba(255,0,0,0.2); color: #ff6b6b; }
+        .result-box.success { background: rgba(37,211,102,0.08); border: 1px solid rgba(37,211,102,0.15); color: #25D366; }
     </style>
 </head>
 <body>
@@ -109,8 +120,7 @@
                 <input type="password" id="password" placeholder="••••••" required>
             </div>
 
-            <div id="errorMsg" class="error"></div>
-            <div id="successMsg" class="success-msg">✅ Вход выполнен! Перенаправляем...</div>
+            <div id="resultMessage" class="result-box"></div>
 
             <button type="submit" class="btn" id="submitBtn">Войти</button>
         </form>
@@ -121,76 +131,93 @@
     </div>
 
     <script>
-        // ===== ПОДКЛЮЧЕНИЕ К SUPABASE (КЛЮЧИ УЖЕ ВСТАВЛЕНЫ) =====
-        const SUPABASE_URL = 'https://vutmbhsclmcfqqlzxqkc.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1dG1iaHNjbG1jZnFxbHp4cWtjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1ODY1OTEsImV4cCI6MjEwMDE2MjU5MX0.PxvaHbwqJjOlStrr0HQx8xulR3BLPxzm4EQWl2LFu2c';
+        document.addEventListener('DOMContentLoaded', function() {
+            // ===== ПОДКЛЮЧЕНИЕ К SUPABASE =====
+            const SUPABASE_URL = 'https://vutmbhsclmcfqqlzxqkc.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1dG1iaHNjbG1jZnFxbHp4cWtjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1ODY1OTEsImV4cCI6MjEwMDE2MjU5MX0.PxvaHbwqJjOlStrr0HQx8xulR3BLPxzm4EQWl2LFu2c';
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const form = document.getElementById('loginForm');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const errorMsg = document.getElementById('errorMsg');
-        const successMsg = document.getElementById('successMsg');
-        const submitBtn = document.getElementById('submitBtn');
+            const form = document.getElementById('loginForm');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const resultMessage = document.getElementById('resultMessage');
+            const submitBtn = document.getElementById('submitBtn');
 
-        // Если пользователь уже авторизован — отправляем в профиль
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN' && session) {
-                window.location.href = 'profile.html';
-            }
-        });
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            errorMsg.style.display = 'none';
-            successMsg.style.display = 'none';
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Вход...';
-
-            const email = emailInput.value.trim();
-            const password = passwordInput.value;
-
-            if (!email || !password) {
-                showError('Заполните все поля.');
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Войти';
-                return;
-            }
-
-            try {
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                });
-
-                if (error) throw error;
-
-                successMsg.style.display = 'block';
-                submitBtn.textContent = 'Готово!';
-                submitBtn.disabled = true;
-                setTimeout(() => {
+            // Проверка, не авторизован ли пользователь уже
+            supabase.auth.getSession().then(({ data }) => {
+                if (data.session) {
                     window.location.href = 'profile.html';
-                }, 1500);
-
-            } catch (error) {
-                console.error('Ошибка входа:', error);
-                let message = 'Неверный email или пароль.';
-                if (error.message?.includes('Invalid login credentials')) {
-                    message = 'Неверный email или пароль.';
-                } else if (error.message?.includes('Email not confirmed')) {
-                    message = 'Подтвердите email перед входом.';
                 }
-                showError(message);
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Войти';
-            }
-        });
+            });
 
-        function showError(msg) {
-            errorMsg.textContent = msg;
-            errorMsg.style.display = 'block';
-        }
+            // Обработка отправки формы
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // Скрываем старое сообщение
+                resultMessage.className = 'result-box';
+                resultMessage.style.display = 'none';
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Вход...';
+
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+
+                if (!email || !password) {
+                    resultMessage.textContent = 'Заполните все поля.';
+                    resultMessage.className = 'result-box error show';
+                    resultMessage.style.display = 'block';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Войти';
+                    return;
+                }
+
+                try {
+                    const { data, error } = await supabase.auth.signInWithPassword({
+                        email: email,
+                        password: password
+                    });
+
+                    if (error) {
+                        console.error('Ошибка входа:', error);
+                        let message = 'Неверный email или пароль.';
+                        if (error.message.includes('Invalid login credentials')) {
+                            message = 'Неверный email или пароль.';
+                        } else if (error.message.includes('Email not confirmed')) {
+                            message = 'Подтвердите email перед входом.';
+                        } else if (error.message.includes('User not found')) {
+                            message = 'Пользователь с таким email не найден.';
+                        }
+                        resultMessage.textContent = message;
+                        resultMessage.className = 'result-box error show';
+                        resultMessage.style.display = 'block';
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Войти';
+                        return;
+                    }
+
+                    // Успешный вход
+                    console.log('Вход выполнен:', data.user);
+                    resultMessage.textContent = '✅ Вход выполнен! Перенаправляем...';
+                    resultMessage.className = 'result-box success show';
+                    resultMessage.style.display = 'block';
+                    submitBtn.textContent = 'Готово!';
+
+                    setTimeout(() => {
+                        window.location.href = 'profile.html';
+                    }, 1500);
+
+                } catch (error) {
+                    console.error('Критическая ошибка:', error);
+                    resultMessage.textContent = 'Произошла ошибка. Попробуйте позже.';
+                    resultMessage.className = 'result-box error show';
+                    resultMessage.style.display = 'block';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Войти';
+                }
+            });
+        });
     </script>
 </body>
 </html>
